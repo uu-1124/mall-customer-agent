@@ -1,0 +1,29 @@
+# 统一换行符：文本文件在仓库与检出时一律使用 LF。
+# 原因：本项目的部署脚本（*.sh）在 Linux 服务器上执行，CRLF 会导致 "bad interpreter" 报错。
+* text=auto eol=lf
+
+# Windows 批处理必须保持 CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+
+# 二进制文件不做任何换行符转换
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.bmp   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+*.gz    binary
+*.tgz   binary
+*.zip   binary
+*.jar   binary
+*.pdf   binary
+*.docx  binary
+*.xlsx  binary
+*.pptx  binary
+*.webp  binary

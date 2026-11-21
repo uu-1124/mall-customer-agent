@@ -1,0 +1,45 @@
+**/node_modules/
+**/target/
+**/dist/
+deployment/secrets.json
+deployment/compose.yaml
+**/.env.local
+**/.env.*.local
+deployment/.dev-ssh.json
+deployment/.run/
+deployment/_incoming/
+deployment/build-manifest.json
+deployment/node_modules/
+deployment/config/
+deployment/init/02-demo-accounts.sql
+deployment/jars/
+deployment/web/
+deployment/es-ik/
+deployment/*.tar.gz
+deployment/evidence/
+deployment/minio-runtime/minio
+deployment/minio-runtime/minio.sha256
+mall-agent/.venv/
+mall-agent/.env
+deployment/demo/demo.env
+deployment/demo/backups/
+mall-agent/.pytest_cache/
+mall-agent/.ruff_cache/
+**/__pycache__/
+*.pyc
+.ruff_cache/
+
+# AI IDE 配置，不入库
+**/.qoder/
+
+# 离线镜像包（约 3 GB，单独存放，不随代码仓库分发）
+deployment/offline/
+
+# 手工备份文件（含旧凭据与 IP，绝不入库）
+**/*.bak
+**/*.bak-*
+**/*.orig
+**/*.rej
+
+# 本地工具与记忆目录
+.workbuddy/

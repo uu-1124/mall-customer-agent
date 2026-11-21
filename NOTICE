@@ -1,0 +1,42 @@
+商城客服智能体 (Mall Customer-Service Agent)
+Copyright 2026 王权无暮
+
+This product is a derivative work built on top of the following open source
+projects, each licensed under the Apache License, Version 2.0:
+
+  mall-swarm
+  Copyright 2018-2023 macrozheng
+  https://github.com/macrozheng/mall-swarm
+  Pinned at commit 04c442f
+
+  mall-admin-web
+  Copyright 2018-2023 macrozheng
+  https://github.com/macrozheng/mall-admin-web
+  Pinned at commit 81fc17e
+
+  mall-app-web
+  Copyright 2018-2023 macrozheng
+  https://github.com/macrozheng/mall-app-web
+  Pinned at commit b1eb3cd
+
+The exact upstream revisions are recorded in deployment/source-lock.json.
+
+Modifications and additions by the original author of this repository:
+
+  - mall-agent/                      standalone Python agent service
+                                     (api / application / domain / infrastructure /
+                                      agents / workers, plus migrations and tests)
+  - mall-swarm/.../agent-bridge/     Java bridge controllers and services for
+                                     identity, catalog, order and after-sale access
+  - mall-swarm/.../CartGuard*        per-member mutual exclusion for cart writes
+  - mall-swarm/.../MoneyAllocation   cent-based amount allocation
+  - mall-common/.../agent/           shared ports used by the bridge layer
+  - mall-admin-web, mall-app-web     /agent/** pages for chat, staff workbench
+                                     and knowledge management
+
+The original projects and their derivatives retain their upstream copyright
+and license notices. This repository adds bridge APIs and database extensions.
+Packaged initialization SQL excludes upstream user, credential, order and
+login-log samples. The demo uses synthetic accounts and simulated payments.
+
+Full license text: see LICENSE.
