@@ -41,7 +41,7 @@
 
 默认使用 `fixture` 模式。它不需要模型密钥，可以验证双端登录、商品查询、中文搜索、流式测试回复和进入人工队列。普通商城订单可在演示库中操作；`fixture` 不调用真实模型，也不替买家执行智能体交易。知识检索、视觉和语音需要相应的供应商配置。
 
-需要 Linux 容器模式的 Docker、Compose v2 和 x86-64 环境；资源、Windows 命令和故障排查见[独立演示指南](deployment/demo/README.md)。克隆本仓库后，从仓库根目录运行：
+需要 Linux 容器模式的 Docker、Compose v2 和 x86-64 环境，建议 12 GB 以上内存；首次构建约 15–30 分钟。资源要求、内核参数、Windows 命令和故障排查见[独立演示指南](deployment/demo/README.md)。克隆本仓库后，从仓库根目录运行：
 
 ```sh
 cd deployment/demo

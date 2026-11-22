@@ -2,9 +2,29 @@
 
 买家端、后台和业务接口都从当前 Git 提交的源码构建。中间件和构建镜像固定到版本和镜像摘要，中文搜索插件校验 SHA-256。可以在本机编译，也可以拉取 GitHub Actions 验收后发布的私有镜像。两种方式都不需要访问原服务器。本项目使用独立 Docker 卷。默认从空的演示数据启动；要把已有部署的订单、账号、知识库和上传文件带过来，见[迁移到另一台服务器](#迁移到另一台服务器)。
 
+## 运行前确认
+
+| 项 | 要求 | 说明 |
+| --- | --- | --- |
+| Docker | Compose v2，**Linux 容器模式** | Windows 需启用 WSL2；macOS / Windows 用 Docker Desktop |
+| 内存 | 建议 12–16 GB | 8 GB 是下限，Milvus 与 Elasticsearch 同时运行时可能 OOM |
+| 磁盘 | ≥ 20 GB 可用 | 镜像与构建缓存约占 8–10 GB |
+| 架构 | x86-64 | ARM 尚未验证 |
+| 网络 | 能访问 Docker Hub 与依赖源 | 基础镜像来自 `docker.io`，构建阶段另需 `ghcr.io`（uv 镜像） |
+
+首次构建要编译 6 个 Java 服务、构建两个前端并安装 Python 依赖，**通常 15–30 分钟**。期间终端可能长时间没有输出，看到 `[+] Building` 即在正常构建，不是卡死。
+
+**Linux 宿主机先执行一次**（Elasticsearch 必需，否则容器会反复重启）：
+
+```sh
+sudo sysctl -w vm.max_map_count=262144
+```
+
+访问 Docker Hub 受限时，请先为 Docker 配置镜像加速，或通过 `DEMO_*_IMAGE` 指向可访问的镜像源。
+
 ## 克隆和启动
 
-需要 Git、Docker Compose v2 与 Linux 容器模式。建议使用 x86-64，给 Docker 至少 8 GB 内存和 20 GB 可用磁盘。首次构建需要访问镜像及依赖源；ARM 尚未验证。已有源码时直接进入目录，不需要访问原开发服务器。
+需要 Git、Docker Compose v2 与 Linux 容器模式。已有源码时直接进入目录，不需要访问原开发服务器。
 
 从你有权限访问的 GitHub 仓库克隆本项目，再在仓库根目录执行 `cd deployment/demo`。以下命令都在该目录运行。
 
@@ -49,6 +69,23 @@ docker compose --env-file demo.env up --no-build -d --wait --wait-timeout 480
 两个合成账号使用公开的本机演示口令 `NewshopDemo!2026`。端口冲突时可以改 `demo.env` 内的 `DEMO_SHOP_PORT` 和 `DEMO_ADMIN_PORT`。只在本机打开演示；不要将这些账号用于联网环境，也不要提交生成的 `demo.env`。
 
 买家端可从商品详情进入客服，也可演示购物车、模拟支付和订单；后台可查看商品、发货及处理售后。在客服会话中申请人工接待，后台进入「智能客服 → 客服工作台」，切换在线后领取。初始化包含商品、SKU、图片、收发货地址和售后规则，订单从空库开始。历史营销活动可能已过期。
+
+## 常见问题
+
+| 现象 | 原因 | 处理 |
+| --- | --- | --- |
+| `pull access denied`、`i/o timeout`、`TLS handshake timeout` | 访问 Docker Hub 受限 | 配置镜像加速后重试 |
+| `elasticsearch` 反复重启，日志提示 `max virtual memory areas vm.max_map_count [65530] is too low` | 宿主机内核参数过低 | 执行上面的 `sysctl` 命令 |
+| `no matching manifest for windows/amd64` | Docker 未切到 Linux 容器模式 | Windows 启用 WSL2 后重启 Docker Desktop |
+| `--wait` 超时，`docker compose ps` 里有服务 `Exited` | 内存不足或端口被占用 | 释放内存；改 `demo.env` 里的 `DEMO_SHOP_PORT` / `DEMO_ADMIN_PORT` |
+| 构建长时间停在同一层 | 首次下载 Maven / npm / Python 依赖 | 属正常现象；超过 40 分钟再排查代理设置 |
+
+排查时先看服务状态和日志，再决定是否重启：
+
+```sh
+docker compose --env-file demo.env ps -a
+docker compose --env-file demo.env logs --tail=100 agent gateway search
+```
 
 ## 接入自己的模型
 
